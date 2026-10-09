@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruebas por departamento · DSIN ERP</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="comun/estilo.css">
+</head>
+<body>
+<main class="portal">
+  <h1>Pruebas del sistema por departamento</h1>
+  <p class="lead">Elige tu área. Cada checklist te lleva pantalla por pantalla con pruebas cortas; marcas el resultado, anotas lo que no funcionó y al final descargas tu reporte.</p>
+
+  <div class="aviso ok" style="max-width:none">
+    <b class="t">Tu avance se guarda en tu navegador</b>
+    Usa siempre <b>el mismo navegador y la misma computadora</b> (Chrome o Edge, en una ventana normal, no privada). No borres los datos de navegación mientras duren las pruebas. Si necesitas cambiar de equipo, descarga tu reporte y recupéralo desde «Más ▾» en el otro navegador.
+  </div>
+
+  <div class="areas" id="areas"></div>
+
+  <div class="aviso" style="max-width:none">
+    <b class="t">Cómo se usa</b>
+    <ol style="margin:4px 0 0;padding-left:1.2em">
+      <li>Entra al sistema con tu usuario de capacitación y a esta página en otra pestaña.</li>
+      <li>Escribe tu nombre en «Datos del probador» (una sola vez).</li>
+      <li>Sigue cada prueba: «Haz esto» son los pasos y «Debe pasar» lo que tienes que ver. Marca <b>Correcto</b>, <b>Falló</b>, <b>Resultado no óptimo</b> o <b>No aplica</b>, y escribe un comentario cuando algo no salga bien.</li>
+      <li>Al terminar (o cada día) pulsa «Descargar reporte» y envíaselo a quien coordina las pruebas.</li>
+    </ol>
+  </div>
+  <p style="color:var(--tx3);font-size:13px" id="pie"></p>
+</main>
+<script src="config.js"></script>
+<script>
+(function () {
+  var CFG = window.DSIN_PRUEBAS || {};
+  var areas = [
+    { id: 'almacen', nombre: 'Almacén / Compras', desc: 'Compras, proveedores, productos, movimientos, kardex, reservas, series, despachos, gestiones de ruta y solicitudes de activos.', color: '#0c6a66', listo: true },
+    { id: 'cxc', nombre: 'CXC', desc: 'Cuentas por cobrar, cartera, créditos por cuotas, cajas, remesas y bancos.', color: '#1c58ad', listo: false },
+    { id: 'cxp', nombre: 'CXP', desc: 'Cuentas por pagar, quedanes, tesorería, tributos, rutas, logística y activos.', color: '#7c3aed', listo: false },
+    { id: 'garantias', nombre: 'Garantías', desc: 'Casos de garantía, RMA, clientes, compras, series, ventas y despacho.', color: '#b45309', listo: false },
+    { id: 'pm', nombre: 'PM', desc: 'Productos, catálogos, líneas y metas PM, listas de precio, promociones, compras y cotizaciones.', color: '#be185d', listo: true },
+    { id: 'ruta', nombre: 'Ruta', desc: 'Despachos, hojas de ruta, gestiones, entregas, vehículos, combustible y reparaciones.', color: '#0d9488', listo: false },
+    { id: 'ventas', nombre: 'Ventas', desc: 'Clientes, nueva venta, cotizaciones, reservas, promocionales, metas y gestiones.', color: '#2563eb', listo: false }
+  ];
+  document.getElementById('areas').innerHTML = areas.map(function (a) {
+    var tag = a.listo ? 'a' : 'div';
+    return '<' + tag + ' class="area' + (a.listo ? '' : ' pronto') + '" style="--c:' + a.color + '"' + (a.listo ? ' href="' + a.id + '/"' : '') + '><b>' + a.nombre + '</b><span>' + a.desc + '</span><span class="est">' + (a.listo ? 'Abrir la checklist →' : 'En preparación') + '</span></' + tag + '>';
+  }).join('');
+  document.getElementById('pie').textContent = (CFG.empresa || 'DSIN ERP') + ' · ambiente: ' + (CFG.ambiente || '') + (CFG.urlSistema ? ' · sistema: ' + CFG.urlSistema : '') + ' · versión ' + (CFG.version || '');
+})();
+</script>
+</body>
+</html>
