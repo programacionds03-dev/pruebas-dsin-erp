@@ -20,7 +20,7 @@ window.AREA = {
     },
     {
       tipo: 'aviso', tono: 'atencion', titulo: 'Tu usuario registra y consulta; no edita',
-      html: 'Con tu usuario puedes crear y consultar, pero no editar, completar, anular ni eliminar: por eso algunos botones no aparecen. Las pruebas con la etiqueta <span class="chip req">Lo hace: Administrador</span> necesitan que el coordinador haga ese paso. Las de <span class="chip neg">Validación: el sistema debe impedirlo</span> comprueban que el sistema no deje hacer algo indebido.'
+      html: 'Con tu usuario puedes crear y consultar, pero no editar, completar, anular ni eliminar: por eso algunos botones no aparecen. En **Reservas solo consultas**, en **Movimientos solo haces traslados entre bodegas**, y a los productos **no les pones precio** (eso lo hace el PM). Las pruebas con la etiqueta <span class="chip req">Lo hace: Administrador</span> necesitan que el coordinador haga ese paso. Las de <span class="chip neg">Validación: el sistema debe impedirlo</span> comprueban que el sistema no deje hacer algo indebido.'
     },
     {
       tipo: 'aviso', tono: 'peligro', titulo: 'Es el sistema real',
@@ -70,13 +70,13 @@ window.AREA = {
       id: 'productos', codigo: 'PRO', titulo: 'Productos / Servicios', corto: 'Productos / Servicios', ruta: 'Inventario → «Productos / Servicios»', url: 'productos', color: '#0c6a66',
       pruebas: [
         {
-          id: 'PRO-01', titulo: 'Crear un producto',
+          id: 'PRO-01', titulo: 'Crear un producto (sin precios)',
           pasos: [
             'Pulsa «Nuevo producto», llena «Nombre», «Tipo» y «Categoría» (obligatorios) y deja «Código / SKU» vacío.',
-            'En una lista de precios escribe «Precio c/IVA ($)» = 11.30 y pulsa «Guardar producto».'
+            'No llenes la tarjeta «Listas de precios» (los precios los pone el PM) y pulsa «Guardar producto».'
           ],
           espera: [
-            'Se guarda con el código generado solo y el precio sin IVA en 10.00. En el listado sale «Activo» y con «Estado inv.» Agotado.'
+            'Se guarda sin precios y con el código generado solo. En el listado sale «Activo» y con «Estado inv.» Agotado.'
           ],
           nota: 'Anota el código del producto: lo usarás en las compras y movimientos de prueba.'
         },
@@ -225,44 +225,42 @@ window.AREA = {
 
     /* ============================================================== MOVIMIENTOS */
     {
-      id: 'movimientos', codigo: 'MOV', titulo: 'Movimientos de inventario', corto: 'Movimientos', ruta: 'Inventario → «Movimientos»', url: 'movimientos', color: '#1c58ad',
+      id: 'movimientos', codigo: 'TRA', titulo: 'Movimientos: traslados entre bodegas', corto: 'Movimientos', ruta: 'Inventario → «Movimientos»', url: 'movimientos', color: '#1c58ad',
       pruebas: [
         {
-          id: 'MOV-01', titulo: 'Entrada de inventario',
-          pasos: [
-            'Pulsa «Nuevo movimiento» con «Tipo de movimiento» = Entrada; llena «Bodega Destino» y «Comentario / nota» (obligatorios; el comentario con 5 letras o más) y agrega un producto con «Cantidad solicitada» 2.',
-            'Si el producto está en cero, «Costo entrada» también es obligatorio. Deja «Procesar de inmediato» y pulsa «Guardar movimiento».'
-          ],
-          espera: [
-            '«Movimiento #N creado y procesado: stock y kardex actualizados.». En Kardex aparece la entrada y la existencia de la bodega subió 2.'
-          ]
-        },
-        {
-          id: 'MOV-02', titulo: 'Traslado entre dos bodegas',
+          id: 'TRA-01', titulo: 'Trasladar producto de una bodega a otra',
           pasos: [
             'Pulsa «Nuevo movimiento» con tipo Traslado; llena «Tipo de operación», «Sucursal Origen», «Sucursal Destino», «Bodega Origen», «Bodega Destino» (distinta a la de origen) y «Comentario / nota» (obligatorios).',
             'Agrega un producto con «Cantidad solicitada» 1 y guarda con «Procesar de inmediato».'
           ],
           espera: [
-            'Queda «Pendiente de recibir» con «Stock en Bodega EN TRANSITO»: la bodega origen baja 1 y la de destino todavía no cambia.',
-            'Con tu usuario no hay botones «Recibir», «Parcial» ni «Rechazar».'
+            'Queda «Pendiente de recibir» con «Stock en Bodega EN TRANSITO»: la bodega origen baja 1 y la de destino todavía no cambia.'
           ],
-          nota: 'Anota el número del traslado: se recibe en MOV-03.'
+          nota: 'Anota el número del traslado: se recibe en TRA-02.'
         },
         {
-          id: 'MOV-03', titulo: 'Recibir el traslado en destino', requiere: 'Administrador',
-          para: 'Crea antes un traslado con dos productos.',
+          id: 'TRA-02', titulo: 'Recibir el traslado en la bodega destino',
           pasos: [
-            'El Administrador abre el traslado: en un producto pulsa «Recibir»; en el otro escribe una cantidad menor, llena «Motivo si hay diferencia» y pulsa «Parcial».'
+            'Abre el traslado de TRA-01, deja la cantidad completa y pulsa «Recibir».'
           ],
           espera: [
-            'Los productos quedan «Recibido» y «Recibido Parcial», y el traslado «Con Observaciones».',
-            'En Kardex lo recibido entra a destino y lo que faltó regresa a origen.'
+            '«Recepción del producto registrada y existencias actualizadas.». El producto queda «Recibido» y el traslado «Completado».',
+            'La existencia de la bodega destino sube 1.'
+          ]
+        },
+        {
+          id: 'TRA-03', titulo: 'Recibir menos de lo enviado',
+          para: 'Crea antes otro traslado con 3 unidades de un producto.',
+          pasos: [
+            'Escribe una cantidad menor a la enviada y pulsa «Parcial» sin motivo. Luego llena «Motivo si hay diferencia» y vuelve a pulsar.'
+          ],
+          espera: [
+            'Sin motivo no deja: «Debe indicar el motivo de la diferencia o rechazo.».',
+            'Con motivo, el producto queda «Recibido Parcial» y el traslado «Con Observaciones»; lo que no se recibió regresa a la bodega origen.'
           ]
         }
       ]
     },
-
     /* ============================================================== KARDEX */
     {
       id: 'kardex', codigo: 'KAR', titulo: 'Kardex', corto: 'Kardex', ruta: 'Inventario → «Kardex»', url: 'kardex', color: '#1c58ad',
@@ -278,12 +276,12 @@ window.AREA = {
         },
         {
           id: 'KAR-02', titulo: 'Comprobar que cada operación quedó registrada',
-          para: 'Hazla después de COM-01, MOV-01 y MOV-02, con el mismo producto.',
+          para: 'Hazla después de COM-01 y TRA-01, con el mismo producto.',
           pasos: [
-            'Consulta el producto y ubica la fila de la compra, la de la entrada y las dos del traslado.'
+            'Consulta el producto y ubica la fila de la compra y las dos del traslado.'
           ],
           espera: [
-            'Están las cuatro filas; las dos del traslado tienen el mismo «Saldo» (un traslado no cambia el total).',
+            'Están las tres filas; las dos del traslado tienen el mismo «Saldo» (un traslado no cambia el total).',
             'En «Existencias por sucursal y bodega», cada bodega coincide con lo que hiciste.'
           ]
         },
@@ -341,43 +339,37 @@ window.AREA = {
 
     /* ============================================================== RESERVAS */
     {
-      id: 'reservas', codigo: 'RES', titulo: 'Reservas de producto', corto: 'Reservas', ruta: 'Inventario → «Reservas»', url: 'reservas', color: '#7c3aed',
+      id: 'reservas', codigo: 'RSV', titulo: 'Reservas de producto', corto: 'Reservas', ruta: 'Inventario → «Reservas»', url: 'reservas', color: '#7c3aed',
       pruebas: [
         {
-          id: 'RES-01', titulo: 'Crear una reserva',
+          id: 'RSV-01', titulo: 'Buscar reservas',
           pasos: [
-            'Pulsa «Nueva reserva», llena «Solicitado por» (un vendedor; tu usuario no aparece) y «Fecha estimada» (obligatorios), y agrega un producto con «Cantidad» 2.',
-            'Revisa que «Bodega origen» y «Bodega reserva» vengan elegidas y pulsa «Guardar reserva».'
+            'Filtra el listado por «Estado» y por «Vendedor», o escribe un cliente o un producto en «Busqueda», y pulsa «Filtrar».'
           ],
           espera: [
-            '«Reserva #N creada.» y queda «Activa».',
-            'En Kardex la bodega origen baja 2, la de reserva sube 2 y el «Stock global» no cambia.'
-          ],
-          nota: 'Si «Bodega reserva» viene vacía, tu sucursal no tiene bodega de reserva: márcalo como Falló.'
-        },
-        {
-          id: 'RES-02', titulo: 'Reservas que el sistema no debe aceptar', negativa: true,
-          pasos: [
-            'Intenta guardar una reserva con «Cantidad» mayor a la existencia y otra con «Fecha estimada» de ayer; luego intenta agregar un servicio.'
-          ],
-          espera: [
-            'Ninguna se crea: avisa «Stock insuficiente…», «La fecha aproximada de liberacion o facturacion no puede ser anterior a hoy.» y «Los servicios no se pueden reservar en inventario.».'
+            'Quedan solo las reservas que cumplen, y las vencidas se distinguen en rojo.'
           ]
         },
         {
-          id: 'RES-03', titulo: 'Consultar reservas y liberar una', requiere: 'Administrador (liberar)',
+          id: 'RSV-02', titulo: 'Revisar una reserva',
           pasos: [
-            'Filtra el listado por «Estado» y «Vendedor» y abre la reserva de RES-01.',
-            'El Administrador pulsa «Liberar reserva».'
+            'Abre una reserva con el icono del ojo.'
           ],
           espera: [
-            'Con tu usuario no aparece «Liberar reserva».',
-            'Tras liberar: «Reserva #N liberada.», queda «Liberada» y las existencias vuelven a como estaban.'
+            'Muestra el cliente, quién la solicitó, la «Fecha estimada» y cada producto con su cantidad, sus bodegas y su estado.'
+          ]
+        },
+        {
+          id: 'RSV-03', titulo: 'Las reservas no se crean ni se liberan desde Almacén', negativa: true,
+          pasos: [
+            'Busca el botón «Nueva reserva» en el listado y «Liberar reserva» dentro de una reserva activa.'
+          ],
+          espera: [
+            'No aparece ninguno: tu usuario solo consulta reservas.'
           ]
         }
       ]
     },
-
     /* ============================================================== ÓRDENES DE TRABAJO */
     {
       id: 'ordenes', codigo: 'OT', titulo: 'Órdenes de trabajo', corto: 'Órdenes de trabajo', ruta: 'Inventario → «Órdenes de trabajo»', url: 'ordenes-trabajo', color: '#0d9488',
