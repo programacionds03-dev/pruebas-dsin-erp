@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruebas · Ruta · DSIN ERP</title>
+<meta name="description" content="Checklist de pruebas del sistema DSIN ERP para el departamento de Ruta. El avance se guarda en el navegador de cada persona.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../comun/estilo.css">
+</head>
+<body>
+<header class="barra">
+  <div class="barra-in">
+    <div class="marca">
+      <b id="titulo-area">Ruta</b>
+      <span id="sub-area">DSIN ERP · checklist de pruebas</span>
+    </div>
+    <div class="avance" title="Pruebas con resultado anotado">
+      <div class="riel" id="riel-total"></div>
+      <span class="num" id="num-total">0 de 0 pruebas</span>
+    </div>
+    <div class="buscar"><input id="buscar" type="search" placeholder="Buscar prueba o pantalla…" aria-label="Buscar"></div>
+    <div class="acciones">
+      <button class="btn act" type="button" data-filtro="todas">Todas</button>
+      <button class="btn" type="button" data-filtro="pendientes">Pendientes</button>
+      <button class="btn" type="button" data-filtro="observadas">Con observación</button>
+      <a class="btn" id="btn-sistema" href="#" target="_blank" rel="noopener">Abrir el sistema ↗</a>
+      <button class="btn pri" id="btn-reporte" type="button" title="Descarga un archivo con tus resultados, comentarios y fechas">Descargar reporte</button>
+      <details class="mas">
+        <summary class="btn">Más ▾</summary>
+        <div class="caja">
+          <button type="button" id="btn-ver-reporte">Ver el reporte en pantalla<small>Se abre en otra pestaña; desde ahí puedes imprimirlo o guardarlo como PDF</small></button>
+          <button type="button" id="btn-csv">Descargar tabla para Excel (CSV)</button>
+          <button type="button" id="btn-recuperar">Recuperar avance desde un reporte<small>Si cambias de computadora, carga aquí el reporte que descargaste</small></button>
+          <button type="button" id="btn-abrir-todo">Abrir / cerrar todas las explicaciones</button>
+          <button type="button" id="btn-tema">Cambiar tema claro / oscuro</button>
+          <button type="button" id="btn-imprimir">Imprimir la checklist</button>
+          <button type="button" id="btn-borrar">Borrar todo mi avance<small>Pide confirmación</small></button>
+        </div>
+      </details>
+      <input type="file" id="archivo" accept="text/html,.html,application/json,.json" hidden>
+    </div>
+    <span id="guardado" role="status" aria-live="polite"></span>
+  </div>
+</header>
+<div class="marco">
+  <nav id="indice" aria-label="Pantallas"></nav>
+  <main id="contenido"><p class="vacio">Cargando…</p></main>
+</div>
+<script src="../config.js"></script>
+<script src="datos.js"></script>
+<script src="../comun/motor.js"></script>
+</body>
+</html>
