@@ -19,11 +19,11 @@ window.AREA = {
     },
     {
       tipo: 'aviso', tono: 'atencion', titulo: 'En cada pantalla haces algo distinto',
-      html: 'En **Proveedores, Compras y Reservas solo consultas**. En **Productos editas** (datos, precios, comisión e imágenes), pero no creas. En **Órdenes de trabajo creas**, pero no procesas ni finalizas. Las pruebas con la etiqueta <span class="chip neg">Validación: el sistema debe impedirlo</span> comprueban que no aparezca lo que no te corresponde, y las de <span class="chip req">Lo hace: Supervisor</span> necesitan que otra persona haga ese paso.'
+      html: 'En **Proveedores, Compras y Reservas solo consultas**. En **Productos editas** (datos, precios, comisión e imágenes), pero no creas. En **Listas de precios pones precios**, pero no creas listas. En **Metas PM ves el avance de tu meta**, que te asigna el Director de PM. En **Órdenes de trabajo creas**, pero no procesas ni finalizas. Las pruebas con la etiqueta <span class="chip neg">Validación: el sistema debe impedirlo</span> comprueban que no aparezca lo que no te corresponde, y las de <span class="chip req">Lo hace: Director de PM</span> necesitan que otra persona haga ese paso.'
     },
     {
       tipo: 'aviso', tono: 'peligro', titulo: 'Lo que registres queda guardado',
-      html: 'Las **ventas se transmiten a un ambiente de pruebas de Hacienda**: no tienen validez fiscal, pero sí bajan el inventario. Las líneas, listas de precios, metas y promociones que crees **no las podrás corregir ni borrar** con tu usuario: usa los datos de prueba que indique el coordinador y nómbralos PRUEBA + tus iniciales.'
+      html: 'Las **ventas se transmiten a un ambiente de pruebas de Hacienda**: no tienen validez fiscal, pero sí bajan el inventario. Las líneas y promociones que crees **no las podrás corregir ni borrar** con tu usuario: usa los datos de prueba que indique el coordinador y nómbralos PRUEBA + tus iniciales.'
     }
   ],
   pantallas: [
@@ -101,39 +101,39 @@ window.AREA = {
 
     /* ============================================================== LISTAS DE PRECIOS */
     {
-      id: 'listas', codigo: 'LIS', titulo: 'Listas de precios', corto: 'Listas de precios', ruta: 'Inventario → «Listas de precios»', url: 'listas-precios', color: '#b45309',
+      id: 'listas', codigo: 'LPR', titulo: 'Listas de precios', corto: 'Listas de precios', ruta: 'Inventario → «Listas de precios»', url: 'listas-precios', color: '#b45309',
       pruebas: [
         {
-          id: 'LIS-01', titulo: 'Crear una lista de precios',
-          para: 'Una lista nueva aparece en todos los productos y con tu usuario no se puede borrar: créala solo si el coordinador lo pide y con el nombre que él indique.',
+          id: 'LPR-01', titulo: 'Consultar las listas de precios',
           pasos: [
-            'En «Nueva lista de precios» llena «Nombre» y «Costos ocultos (%)» = 5 (obligatorios) y pulsa «Crear lista».'
+            'Revisa en la tabla el «Nombre de la lista», «IVA», «Activa», «Clientes» y «Precios» de cada una.'
           ],
           espera: [
-            '«Lista de precios creada correctamente.». La fila nueva sale con «Clientes» 0 y «Precios» 0.'
+            'Ves todas las listas, con cuántos clientes y cuántos productos con precio tiene cada una.'
           ]
         },
         {
-          id: 'LIS-02', titulo: 'Ver las listas en las demás pantallas',
+          id: 'LPR-02', titulo: 'Poner el precio de un producto en una lista',
           pasos: [
-            'Abre la ficha de un producto y revisa «Precios por lista de precios». Luego abre «Catálogos de productos» y despliega «Categoría de precio».'
+            'En la ficha de un producto a tu cargo, en «Precios por lista de precios», escribe el «c/IVA» de una lista y pulsa «Guardar precios».',
+            'Abre «Catálogos de productos» y despliega «Categoría de precio».'
           ],
           espera: [
-            'Las dos pantallas ofrecen las mismas listas activas que ves aquí (incluida la de LIS-01, si la creaste).'
+            'El precio queda guardado en esa lista.',
+            'El catálogo ofrece las mismas listas activas que ves en esta pantalla.'
           ]
         },
         {
-          id: 'LIS-03', titulo: 'Las listas existentes no se modifican', negativa: true,
+          id: 'LPR-03', titulo: 'Las listas no se crean ni se modifican desde PM', negativa: true,
           pasos: [
-            'Intenta cambiar el nombre o el IVA de una lista existente y busca el botón de guardar.'
+            'Busca el formulario «Nueva lista de precios» con su botón «Crear lista», e intenta cambiar el nombre de una lista existente.'
           ],
           espera: [
-            'Los campos están deshabilitados y la columna «Acciones» está vacía: tu usuario crea listas, pero no las modifica.'
+            'No aparece el formulario y los campos de la tabla están deshabilitados: tu usuario pone precios en las listas, pero no crea ni modifica listas.'
           ]
         }
       ]
     },
-
     /* ============================================================== PRODUCTOS */
     {
       id: 'productos', codigo: 'PRO', titulo: 'Productos / Servicios', corto: 'Productos / Servicios', ruta: 'Inventario → «Productos / Servicios»', url: 'productos', color: '#0c6a66',
@@ -355,41 +355,40 @@ window.AREA = {
 
     /* ============================================================== METAS PM */
     {
-      id: 'metas', codigo: 'MET', titulo: 'Metas PM', corto: 'Metas PM', ruta: 'Inventario → «Asignación de Metas PM» · «Metas PM»', url: 'metas-pm', color: '#be185d',
+      id: 'metas', codigo: 'MTA', titulo: 'Metas PM', corto: 'Metas PM', ruta: 'Inventario → «Metas PM» · «Asignación de Metas PM»', url: 'metas-pm/dashboard', color: '#be185d',
       pruebas: [
         {
-          id: 'MET-01', titulo: 'Crear tu meta del mes',
+          id: 'MTA-01', titulo: 'El Director de PM te asigna la meta del mes', requiere: 'Director de PM',
           pasos: [
-            'En «Asignación de Metas PM» pulsa «Nueva meta PM», deja el «Tipo de meta» de ventas, escribe «Meta de ventas ($)» = 5000 (obligatorio) y pulsa «Guardar».'
+            'El Director de PM entra a «Asignación de Metas PM», pulsa «Nueva meta PM», te elige en «Product Manager», escribe «Meta de ventas ($)» = 5000 (obligatorio) y pulsa «Guardar».'
           ],
           espera: [
             '«Meta PM #… creada correctamente.». La fila sale «Activa», con tu nombre y el mes actual en «Periodo».'
           ],
-          nota: 'Si «Mes» tiene valor, la meta toma ese mes completo aunque cambies las fechas. Una meta activa no se puede corregir con tu usuario.'
+          nota: 'Si «Mes» tiene valor, la meta toma ese mes completo aunque se cambien las fechas.'
         },
         {
-          id: 'MET-02', titulo: 'Ver el avance en el dashboard',
+          id: 'MTA-02', titulo: 'Ver el avance de tu meta',
+          para: 'Hazla después de MTA-01.',
           pasos: [
-            'Pulsa el ícono «Dashboard» de la fila de tu meta (o entra a Inventario → «Metas PM»).'
+            'Entra a Inventario → «Metas PM».'
           ],
           espera: [
-            '«Cumplimiento de Meta» muestra tu meta de $5,000.00, y «Compras al proveedor del PM» lista las compras de los productos a tu cargo.',
+            '«Cumplimiento de Meta» muestra la meta de $5,000.00 que te puso el Director, con tus ventas y compras del periodo.',
             'Solo ves tus datos: no hay filtro para elegir otro PM.'
           ]
         },
         {
-          id: 'MET-03', titulo: 'No se aceptan dos metas activas iguales', negativa: true,
+          id: 'MTA-03', titulo: 'Las metas no se asignan desde PM', negativa: true,
           pasos: [
-            'Crea otra meta del mismo tipo para el mismo mes.'
+            'Entra a «Asignación de Metas PM» y busca «Nueva meta PM», «Copiar», el lápiz y la papelera.'
           ],
           espera: [
-            '«Ya existe una meta activa para este PM y tipo dentro del periodo indicado.».',
-            'En el listado no hay lápiz ni papelera.'
+            'No aparece ninguno, y solo se lista tu propia meta: las metas las pone el Director de PM.'
           ]
         }
       ]
     },
-
     /* ============================================================== RESERVAS */
     {
       id: 'reservas', codigo: 'RES', titulo: 'Reservas de producto', corto: 'Reservas', ruta: 'Inventario → «Reservas»', url: 'reservas', color: '#7c3aed',
